@@ -43,7 +43,14 @@ def load_sector_classification() -> tuple[set[str], set[str]]:
 
 
 def load_firm(display_name: str, search_term: str, bd_registration: dict,
-              biotech_names: set[str], healthcare_names: set[str]) -> PAFirm:
+              specific_names: set[str], broad_names: set[str],
+              specific_tags: list[str] = ("biotech", "healthcare"),
+              broad_tags: list[str] = ("healthcare",)) -> PAFirm:
+    """specific_names/broad_names are two-tier fund-identity classification
+    sets (see data/sector_classification/*.json) - domain-agnostic so this
+    works for any GP's search, not just GBF's biotech axis. specific_tags/
+    broad_tags are the labels applied, matched against the calling GP
+    profile's strategy_tags by scoring.py."""
     cache_path = CACHE_DIR / f"{display_name.replace(' ', '_').replace('/', '-')}.json"
     raw_mandates = json.loads(cache_path.read_text()) if cache_path.exists() else []
 
@@ -52,10 +59,10 @@ def load_firm(display_name: str, search_term: str, bd_registration: dict,
         sold = m.get("total_amount_sold")
         amount = float(sold) / 1_000_000 if sold and sold != "0" else None
         fund = _strip_cik_suffix(m["fund_name"])
-        if fund in biotech_names:
-            sector_tags = ["biotech", "healthcare"]
-        elif fund in healthcare_names:
-            sector_tags = ["healthcare"]
+        if fund in specific_names:
+            sector_tags = list(specific_tags)
+        elif fund in broad_names:
+            sector_tags = list(broad_tags)
         else:
             sector_tags = []
         mandates.append(
