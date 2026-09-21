@@ -24,6 +24,18 @@ def _parse_date(s: str | None) -> date | None:
     return date.fromisoformat(s)
 
 
+def _strip_cik_suffix(fund_name: str) -> str:
+    # Harvested fund_name values carry a trailing "  (CIK 0001234567)" that
+    # the hand-written classification list doesn't - normalize both sides
+    # to this form so lookups actually match. (Found live: without this,
+    # EVERY classification lookup silently missed, since the classification
+    # list was written without CIK suffixes - domain_specificity was 0 for
+    # every firm, and the fix appeared to "work" only because of an
+    # unrelated tie-break coincidence. Never re-introduce an exact match
+    # against the raw fund_name field.)
+    return fund_name.split("  (CIK")[0].strip()
+
+
 def load_sector_classification() -> tuple[set[str], set[str]]:
     path = DATA_DIR / "sector_classification" / "gbf_biotech_classification.json"
     data = json.loads(path.read_text())
@@ -39,7 +51,7 @@ def load_firm(display_name: str, search_term: str, bd_registration: dict,
     for m in raw_mandates:
         sold = m.get("total_amount_sold")
         amount = float(sold) / 1_000_000 if sold and sold != "0" else None
-        fund = m["fund_name"]
+        fund = _strip_cik_suffix(m["fund_name"])
         if fund in biotech_names:
             sector_tags = ["biotech", "healthcare"]
         elif fund in healthcare_names:
