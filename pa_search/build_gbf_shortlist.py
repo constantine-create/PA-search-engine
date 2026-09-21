@@ -24,7 +24,14 @@ def _parse_date(s: str | None) -> date | None:
     return date.fromisoformat(s)
 
 
-def load_firm(display_name: str, search_term: str, bd_registration: dict) -> PAFirm:
+def load_sector_classification() -> tuple[set[str], set[str]]:
+    path = DATA_DIR / "sector_classification" / "gbf_biotech_classification.json"
+    data = json.loads(path.read_text())
+    return set(data["biotech_specific"]), set(data["healthcare_broad"])
+
+
+def load_firm(display_name: str, search_term: str, bd_registration: dict,
+              biotech_names: set[str], healthcare_names: set[str]) -> PAFirm:
     cache_path = CACHE_DIR / f"{display_name.replace(' ', '_').replace('/', '-')}.json"
     raw_mandates = json.loads(cache_path.read_text()) if cache_path.exists() else []
 
@@ -32,7 +39,13 @@ def load_firm(display_name: str, search_term: str, bd_registration: dict) -> PAF
     for m in raw_mandates:
         sold = m.get("total_amount_sold")
         amount = float(sold) / 1_000_000 if sold and sold != "0" else None
-        sector_tags = ["biotech", "healthcare"] if m["is_biotech_relevant_by_name"] else []
+        fund = m["fund_name"]
+        if fund in biotech_names:
+            sector_tags = ["biotech", "healthcare"]
+        elif fund in healthcare_names:
+            sector_tags = ["healthcare"]
+        else:
+            sector_tags = []
         mandates.append(
             Mandate(
                 pa_firm=display_name,
@@ -67,17 +80,19 @@ def main() -> None:
         if (DATA_DIR / "harvest_cache" / "_summary.json").exists() else {}
 
     as_of = date(2026, 9, 21)
+    biotech_names, healthcare_names = load_sector_classification()
     candidates = []
     for display_name, search_term in GBF_ROSTER:
-        firm = load_firm(display_name, search_term, reg)
+        firm = load_firm(display_name, search_term, reg, biotech_names, healthcare_names)
         score = score_candidate(firm, gp, as_of, require_boutique=False)
         n_mandates = len(firm.mandates)
-        n_biotech = len([m for m in firm.mandates if m.sector_tags])
+        n_biotech = len([m for m in firm.mandates if "biotech" in m.sector_tags])
+        n_healthcare = len([m for m in firm.mandates if m.sector_tags])
         thesis = (
             f"{n_mandates} SEC Form D mandates found where this firm is a listed sales-compensation "
-            f"recipient (2019-2026); {n_biotech} tagged biotech/healthcare-relevant by fund-name keyword "
-            f"match (a crude heuristic - real biotech relevance needs sector data this pass doesn't have, "
-            f"see notes)."
+            f"recipient (2019-2026); {n_healthcare} healthcare-relevant, {n_biotech} biotech-specific "
+            f"(manually classified by fund identity, not keyword-matched - see "
+            f"data/sector_classification/gbf_biotech_classification.json)."
         )
         candidates.append(ScoredCandidate(firm=firm, score=score, thesis=thesis))
 

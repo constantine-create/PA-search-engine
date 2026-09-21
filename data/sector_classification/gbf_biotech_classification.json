@@ -1,0 +1,37 @@
+{
+  "_note": "Manual sector classification of the 275 distinct funds harvested from live Form D data, done by reading each fund's name/family and applying domain knowledge (Form D itself has no usable sector field - confirmed: even Panacea Venture Healthcare Fund II reports as generic 'Private Equity Fund'). Two tiers mirror the GBF ground-truth doc's own 'latest healthcare mandate' vs 'latest biotech-specific mandate' split. This is a first-pass, single-reviewer classification - not independently verified - and should be spot-checked before being treated as authoritative.",
+  "biotech_specific": [
+    "Abingworth Bioventures 9 LP",
+    "Abingworth Clinical Co-Development Co-Investment Fund, L.P.",
+    "ABV 9 - EU, S.C.Sp",
+    "CCD-CIF Holdings, L.P.",
+    "Aisling Capital V, LP",
+    "Blackstone Life Sciences V L.P.",
+    "Catalio Structured Opportunities Fund II, LP",
+    "Catalio Structured Opportunities Offshore Fund II, LP",
+    "Longitude Venture Partners V, L.P.",
+    "Longitude Prime Fund II, L.P.",
+    "Panacea Venture Healthcare Fund II, L.P.",
+    "Panacea Opportunity Fund I, L.P."
+  ],
+  "healthcare_broad": [
+    "AHP Fund II L.P.",
+    "BPOC FUND VI, L.P.",
+    "Cimarron Healthcare Capital Fund II, LP",
+    "HCP SERVICES FUND, L.P.",
+    "HCP SERVICES FUND PARALLEL, L.P.",
+    "Heritage Healthcare Innovation Fund IV, LP",
+    "Revelstoke Capital Partners Fund II, L.P.",
+    "Revelstoke Capital Partners Fund III, L.P.",
+    "Revelstoke Capital Partners Fund IV, L.P.",
+    "Revelstoke Capital Partners Fund IV (LUX), SCSp",
+    "Revelstoke Capital Partners Executive Fund IV, L.P.",
+    "Revelstoke Single Asset Fund I, L.P.",
+    "SHERIDAN CAPITAL PARTNERS HCIT FUND I, LP",
+    "SHERIDAN CAPITAL PARTNERS HCIT FUND I-A, LP",
+    "Transformation Capital Fund II, L.P.",
+    "Genesis Capital Fund II, LP",
+    "Care Equity, L.P.",
+    "HLM Investment Partners VI, L.P."
+  ]
+}
