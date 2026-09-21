@@ -28,14 +28,31 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 CACHE_DIR = DATA_DIR / "harvest_cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
+# (display name used in output, search term used against Form D full text search)
+# Full display names like "Houlihan Lokey Private Funds Group" rarely appear
+# verbatim on a filing - Form D recipient fields use the firm's shorter legal/
+# brand name. Confirmed by diagnostic: searching "Houlihan Lokey" alone finds
+# 70 hits including Revelstoke III/II (exactly what the ground-truth doc cites
+# for this firm), where the full display name found 0.
 GBF_ROSTER = [
-    "Atlantic-Pacific Capital", "Eaton Partners", "Asante Capital Group",
-    "Probitas Partners", "Houlihan Lokey Private Funds Group", "Snowbridge Advisors",
-    "Monument Group", "Capstone Partners", "Pacenote Capital",
-    "Harris Williams Private Capital Advisory", "UBS Private Funds Group",
-    "Lazard Private Capital Advisory", "William Blair", "Metric Point Capital",
-    "Harken Capital Securities", "Strathmore Group", "Evercore Private Funds Group",
-    "PJT Park Hill",
+    ("Atlantic-Pacific Capital", "Atlantic-Pacific Capital"),
+    ("Eaton Partners", "Eaton Partners"),
+    ("Asante Capital Group", "Asante Capital"),
+    ("Probitas Partners", "Probitas Partners"),
+    ("Houlihan Lokey Private Funds Group", "Houlihan Lokey"),
+    ("Snowbridge Advisors", "Snowbridge"),
+    ("Monument Group", "Monument Group"),
+    ("Capstone Partners (Mizuho)", "Capstone Partners"),
+    ("Pacenote Capital", "Pacenote Capital"),
+    ("Harris Williams Private Capital Advisory", "Harris Williams"),
+    ("UBS Private Funds Group", "UBS Securities"),
+    ("Lazard Private Capital Advisory", "Lazard"),
+    ("William Blair", "William Blair"),
+    ("Metric Point Capital", "Metric Point Capital"),
+    ("Harken Capital Securities", "Harken Capital"),
+    ("Strathmore Group", "Strathmore Group"),
+    ("Evercore Private Funds Group", "Evercore"),
+    ("PJT Park Hill", "PJT Park Hill"),
 ]
 
 BIOTECH_KEYWORDS = [
@@ -44,8 +61,23 @@ BIOTECH_KEYWORDS = [
 ]
 
 
-def _name_match(a: str, b: str, threshold: float = 0.6) -> bool:
-    return SequenceMatcher(None, a.lower(), b.lower()).ratio() >= threshold
+def _name_match(search_term: str, candidate: str, threshold: float = 0.55) -> bool:
+    """True if candidate is plausibly the same firm as search_term.
+
+    Substring containment handles the common case (search_term is a short
+    brand name, candidate is the fuller legal name, e.g. "Eaton Partners"
+    vs "Eaton Partners, LLC" or "Eaton Partners (Stifel)"). Fuzzy ratio is
+    a fallback for near-matches that aren't clean substrings. Pure
+    SequenceMatcher ratio alone was too strict for short-vs-long name
+    pairs like "UBS Securities" vs "UBS Financial Services Inc." and
+    silently dropped real matches.
+    """
+    if not candidate:
+        return False
+    s, c = search_term.lower().strip(), candidate.lower().strip()
+    if s in c or c in s:
+        return True
+    return SequenceMatcher(None, s, c).ratio() >= threshold
 
 
 def is_biotech_relevant(issuer_name: str) -> bool:
@@ -53,14 +85,29 @@ def is_biotech_relevant(issuer_name: str) -> bool:
     return any(kw in low for kw in BIOTECH_KEYWORDS)
 
 
-def harvest_firm(firm_name: str, max_filings: int = 15) -> list[dict]:
-    cache_path = CACHE_DIR / f"{firm_name.replace(' ', '_').replace('/', '-')}.json"
+def _with_retry(fn, attempts=3, base_delay=1.5):
+    last_exc = None
+    for i in range(attempts):
+        try:
+            return fn()
+        except Exception as e:
+            last_exc = e
+            msg = str(e)
+            if "500" in msg or "503" in msg:
+                time.sleep(base_delay * (i + 1))
+                continue
+            raise
+    raise last_exc
+
+
+def harvest_firm(display_name: str, search_term: str, max_filings: int = 30) -> list[dict]:
+    cache_path = CACHE_DIR / f"{display_name.replace(' ', '_').replace('/', '-')}.json"
     if cache_path.exists():
         return json.loads(cache_path.read_text())
 
-    print(f"harvesting: {firm_name}")
+    print(f"harvesting: {display_name} (search: {search_term!r})")
     try:
-        hits = edgar_formd.search_form_d(f'"{firm_name}"', "2019-01-01", "2026-09-21")
+        hits = _with_retry(lambda: edgar_formd.search_form_d(f'"{search_term}"', "2019-01-01", "2026-09-21"))
     except Exception as e:
         print(f"  search failed: {e}")
         return []
@@ -79,7 +126,7 @@ def harvest_firm(firm_name: str, max_filings: int = 15) -> list[dict]:
 
         time.sleep(0.15)  # stay well under SEC's rate guidance
         try:
-            xml = edgar_formd.fetch_form_d_xml(ciks[0], adsh)
+            xml = _with_retry(lambda: edgar_formd.fetch_form_d_xml(ciks[0], adsh))
         except Exception as e:
             print(f"  fetch failed for {adsh}: {e}")
             continue
@@ -87,8 +134,8 @@ def harvest_firm(firm_name: str, max_filings: int = 15) -> list[dict]:
         recipients = edgar_formd.parse_recipients_from_xml(xml)
         matched = [
             r for r in recipients
-            if _name_match(firm_name, r.get("recipientName", "")) or
-               _name_match(firm_name, r.get("associatedBDName", ""))
+            if _name_match(search_term, r.get("recipientName", "")) or
+               _name_match(search_term, r.get("associatedBDName", ""))
         ]
         if not matched:
             continue  # firm was mentioned somewhere in the filing, but not as the recipient - discard
@@ -96,13 +143,14 @@ def harvest_firm(firm_name: str, max_filings: int = 15) -> list[dict]:
         amounts = edgar_formd.parse_offering_amounts(xml)
         mandates.append(
             {
-                "pa_firm": firm_name,
+                "pa_firm": display_name,
                 "fund_name": issuer_display,
                 "file_date": hit.get("file_date"),
                 "accession": adsh,
                 "total_offering_amount": amounts.get("totalOfferingAmount"),
                 "total_amount_sold": amounts.get("totalAmountSold"),
                 "recipient_crd": matched[0].get("recipientCRDNumber"),
+                "matched_recipient_name": matched[0].get("recipientName"),
                 "is_biotech_relevant_by_name": is_biotech_relevant(issuer_display),
                 "source_url": edgar_formd.filing_xml_url(ciks[0], adsh),
             }
@@ -112,19 +160,19 @@ def harvest_firm(firm_name: str, max_filings: int = 15) -> list[dict]:
     return mandates
 
 
-def harvest_all(roster: list[str] = GBF_ROSTER) -> dict[str, list[dict]]:
+def harvest_all(roster: list[tuple[str, str]] = GBF_ROSTER) -> dict[str, list[dict]]:
     out = {}
-    for firm in roster:
-        out[firm] = harvest_firm(firm)
+    for display_name, search_term in roster:
+        out[display_name] = harvest_firm(display_name, search_term)
         time.sleep(0.2)
     return out
 
 
-def verify_all_registrations(roster: list[str] = GBF_ROSTER) -> dict[str, dict]:
+def verify_all_registrations(roster: list[tuple[str, str]] = GBF_ROSTER) -> dict[str, dict]:
     out = {}
-    for firm in roster:
-        is_reg, crd, warnings = brokercheck.is_registered_broker_dealer(firm)
-        out[firm] = {"is_registered_bd": is_reg, "crd": crd, "warnings": warnings}
+    for display_name, search_term in roster:
+        is_reg, crd, warnings = _with_retry(lambda: brokercheck.is_registered_broker_dealer(search_term))
+        out[display_name] = {"is_registered_bd": is_reg, "crd": crd, "warnings": warnings}
         time.sleep(0.2)
     return out
 
