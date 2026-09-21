@@ -1,0 +1,37 @@
+{
+  "fund_name": "Global Bioaccess Fund II (GBF II)",
+  "manager_name": "RM Global Partners, LLC (RMG) / RMG-KB",
+  "fund_number": "Fund II",
+  "strategy_tags": [
+    "biotech",
+    "medtech",
+    "life sciences",
+    "oncology",
+    "immunology & inflammation (I&I)",
+    "cardiovascular / metabolic syndrome",
+    "central nervous system / neuro",
+    "orphan drugs / rare diseases",
+    "validator strategy (Series A/B/C, not seed venture creation, not crossover)"
+  ],
+  "stage_tags": [
+    "clinical-stage",
+    "Phase I-ready to pivotal",
+    "60% early clinical / 40% mid-late clinical (Fund I split)",
+    "clinical proof-of-concept expected within 12-24 months of investment",
+    "target liquidity within 18-36 months of investment"
+  ],
+  "target_fund_size_usd_m": [200, 250],
+  "prior_fund_size_usd_m": 80,
+  "geography": [
+    "Global life science ecosystem",
+    "US-based manager (RM Global)",
+    "Korean strategic co-sponsor (KB Investment Co. / KBI) on Fund I"
+  ],
+  "target_lp_types": [
+    "NOT STATED IN DECK - inferred only",
+    "institutional (typical for a validator-stage biotech fund of this size)",
+    "possible strategic/corporate LP angle given KBI co-sponsorship of Fund I"
+  ],
+  "source_document": "GLOBAL_BIOACCESS_FUND_Introduction_-_Mar_2026.pdf (19 pages, full deck read)",
+  "notes": "SIZE DISCREPANCY TO FLAG: deck slide 8 states Fund II is 'Raising $200-250 million.' The DeepFlows ground-truth search for this same GP assumed a $300-600M band ('Fit for the $300-600M band is our assumption' - footer). Either the target grew between the Mar-2026 deck and the Sep-2026 search, the search used a different/unstated size input, or the assumption was a fallback. Do not silently reconcile - both figures are recorded; the pipeline should be run once against each band and the difference in resulting shortlist should be shown to the user. Target LP types are not stated anywhere in the 19-slide deck (it's an LP-facing deck, so LP identity is naturally omitted) - this field is a weak inference, not extracted fact, and should be confirmed with the Constantine deal team before use in lp_fit scoring."
+}

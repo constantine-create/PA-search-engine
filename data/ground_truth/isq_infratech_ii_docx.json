@@ -1,0 +1,71 @@
+{
+  "search_title": "Boutique placement agents for ISQ InfraTech Growth Fund II",
+  "search_date": "2026-09-21",
+  "band_usd_m": [225, 300],
+  "band_note": "$225M target, $300M cap - investing in physical-world AI",
+  "filter_rule": "Global platforms and mid-size agents are excluded ON PURPOSE - boutique-only search. This is a hard filter, not just a scoring bonus.",
+  "prepared_by": "DeepFlows",
+  "score_breakdown_examples_from_ui_screenshots": [
+    {
+      "firm": "FirstPoint Equity",
+      "rank": 3,
+      "displayed_total": 15.57,
+      "components": {"recency": 3, "band": 2, "stage": 3, "domain_specificity_deeptech": 2, "lp_fit": 1, "emerging": 1, "evidence": 0.57, "boutique": 1, "us_gp": 1, "type": 0},
+      "component_sum_check": 14.57,
+      "note": "sum of visible components is 14.57 vs displayed 15.57 - there appears to be a +1 base/component not shown in the UI capture, or a transcription gap. Treat as approximate; recalibrate once more examples are captured.",
+      "crd_or_frn": "FCA FRN 537110 (FirstPoint Equity Ltd)",
+      "mandate_count": "82 funds serviced",
+      "not_in_preqin": false
+    },
+    {
+      "firm": "FocusPoint Private Capital",
+      "rank": 9,
+      "displayed_total": 13.5,
+      "components": {"recency": 5, "band": 2, "stage": 3, "domain_specificity_deeptech": 2, "lp_fit": 0, "emerging": 0, "evidence": 1.0, "boutique": 0.5, "us_gp": 0, "type": 0},
+      "component_sum_check": 13.5,
+      "note": "EXACT MATCH - confirms the displayed score is a straight additive sum of the named components, at least in this case",
+      "crd_or_frn": "FINRA CRD 122341",
+      "mandate_count": "47 mandates 2010-2025 listed on site",
+      "not_in_preqin": true
+    }
+  ],
+  "verification_pipeline_evidence": {
+    "example_firm": "FirstPoint Equity",
+    "observed_behavior": "An LLM (named 'Gemini' in the UI) drafts claims from agent websites/press. Every claim is then cross-checked against primary sources (SEC Form D XML recipients, FINRA BrokerCheck / FCA Register / Companies House for UK firms). Claims that could not be verified are logged explicitly rather than silently kept or dropped, e.g.: \"Snowhawk 'FirstPoint exclusive global PA' - press release names no agent; Form D lists 3 recipients (FirstPoint, Finex HK, BA Securities)\"; \"GEF US Climate Solutions II '$325M 2024' - Form D/A shows $318M sold\"; \"FCA FRN 795493 - not found; site states FRN 537110\"; \"Nexa Equity Fund I - site lists 2022 (press June 2023) - date discrepancy to note\".",
+    "source_trust_tags_seen": ["source (primary/filing)", "agent website (self-reported)", "press (third-party)"]
+  },
+  "ranked": [
+    {"rank": 1, "firm": "TritonLake", "region": "United States", "hq": "New York", "latest_mandate": "2025-02", "note": "distribution to family offices/RIAs/OCIOs/FoFs; Pelion Ventures VIII $247M and GEF Climate Solutions II $318M in-band; raising own $200M venture fund now"},
+    {"rank": 2, "firm": "Pacenote Capital", "region": "United States", "hq": "Austin, TX", "latest_mandate": "2026-07", "note": "most active boutique in 2026: exclusive on LionLight I ($215M hard cap in 10 weeks); 4 growth funds $120-300M since 2024"},
+    {"rank": 3, "firm": "FirstPoint Equity", "region": "Europe", "hq": "London", "latest_mandate": "2023-12", "note": "sells US managers to European LPs; Nexa Equity I $180M, GEF Climate Solutions II $318M; closest thematic match (infra-meets-tech)"},
+    {"rank": 4, "firm": "Strathmore Group", "region": "United States", "hq": "New York / Boston", "latest_mandate": "2026-06", "note": "growth-equity specialist for first/second funds; Wingman Growth I closed at $215M hard cap"},
+    {"rank": 5, "firm": "WHR Capital", "region": "United States", "hq": "n/a", "latest_mandate": "2026", "note": "one-person shop, ex-MVision US distribution; SuperBloom I $280M, Meaningful I $175M"},
+    {"rank": 6, "firm": "TopCap Partners", "region": "Europe / United States", "hq": "Munich / New York", "latest_mandate": "2024-07", "note": "18 venture mandates $120-350M; sells US venture to German/Swiss family offices and private banks"},
+    {"rank": 7, "firm": "M2O Private Fund Advisors", "region": "United States", "hq": "Boston / New York", "latest_mandate": "2026-01", "note": "top of the band (Guidepost Growth IV $521M); better suited if fund runs to its $300M cap"},
+    {"rank": 8, "firm": "Connaught Fund Management", "region": "Europe", "hq": "London / New York", "latest_mandate": "2026-03", "note": "reaches Nordic pensions/Swiss institutions/Gulf investors; mandates skew larger than this fund"},
+    {"rank": 9, "firm": "FocusPoint Private Capital", "region": "United States", "hq": "New York", "latest_mandate": "2026-06", "note": "exclusive on Anti Fund Growth I ($100M, AI/robotics/defense/energy) - closest thematic match, but rest of book is secondaries/PE and not in Preqin's universe"},
+    {"rank": 10, "firm": "Acanthus Advisers", "region": "Europe", "hq": "London", "latest_mandate": "2025-08", "note": "London mid-market specialist, European institutional coverage; Henko II EUR175M energy/industrial-tech growth"},
+    {"rank": 11, "firm": "Brooklands Capital Strategies", "region": "United States", "hq": "San Francisco", "latest_mandate": "2024-10", "note": "agent on Activate Capital III, industrial/energy-tech venture fund, still raising"},
+    {"rank": 12, "firm": "Cohen Brothers", "region": "Europe", "hq": "London", "latest_mandate": "2023", "note": "venture/growth $100-200M; most recent dated mandate is 2023"},
+    {"rank": 13, "firm": "Candela Capital", "region": "Europe", "hq": "London", "latest_mandate": "2019-10", "note": "sells US venture/growth managers to European private banks; most mandates undated or pre-2020"},
+    {"rank": 14, "firm": "Briarcliffe Credit Partners", "region": "United States", "hq": "New York", "latest_mandate": "2026-04", "note": "known for credit, but exclusive agent on Crescent Cove IV $446M growth capital for tech companies"},
+    {"rank": 15, "firm": "IRoise Partners", "region": "Europe", "hq": "Paris", "latest_mandate": "2025", "note": "French/European institutions and family offices; French-speaking entry point"},
+    {"rank": 16, "firm": "Platypus Partners", "region": "Europe", "hq": "London", "latest_mandate": "2023-10", "note": "founded 2017; positions family offices as early movers; sold US growth managers to European LPs"},
+    {"rank": 17, "firm": "Fern Creek Ventures", "region": "United States", "hq": "Mill Valley / SF Bay Area", "latest_mandate": "2023-09", "note": "one-man shop, venture funds under $250M, 1-2 placements/year, family-office heavy"},
+    {"rank": 18, "firm": "Papamarkou Wellner", "region": "United States", "hq": "New York", "latest_mandate": "2026-06", "note": "broker-dealer for family offices/private wealth; pure family-office channel rather than full-service agent"},
+    {"rank": 19, "firm": "Trinity Group", "region": "Europe", "hq": "London", "latest_mandate": "2025-11", "note": "sole agent on Prime Movers Lab III $237M deeptech (energy/transport/manufacturing) - nearest European strategy match"},
+    {"rank": 20, "firm": "MCAM Group", "region": "Europe", "hq": "London", "latest_mandate": "2019-05", "note": "cross-border venture placements; no dated mandate since 2019"}
+  ],
+  "also_considered": [
+    {"firm": "Shannon Advisors", "note": "Chicago area; Hughes Growth Equity II $250M"},
+    {"firm": "XT Capital Partners", "note": "Connecticut; co-agent Glasswing Ventures III $203M AI/deeptech"},
+    {"firm": "Acalyx Advisors", "note": "former MVision team; Resolve Growth Partners II $106M"},
+    {"firm": "Umergence", "note": "Connecticut broker-dealer; Harpoon Ventures IV $124M"},
+    {"firm": "New Era Advisors", "note": "Washington DC; women-led/diverse manager specialist, $250M-1B"},
+    {"firm": "Sparring Partners Capital", "note": "New York; Left Lane Capital III $599M - larger funds than this one"},
+    {"firm": "Athos Partners", "note": "Monaco/NY/Dubai; European small-mid market, 44 mandates"},
+    {"firm": "Thomas Investment Partners", "note": "Paris, 1-2 people; sold Adams Street Growth Equity VIII to French investors"},
+    {"firm": "Matrix Investment Services", "note": "Stockholm; Nordic institutions, same Adams Street fund"},
+    {"firm": "Greenstone Equity Partners", "note": "Dubai; Gulf channel, Pelion Ventures VIII, Valor Venture V"}
+  ]
+}

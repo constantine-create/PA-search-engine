@@ -1,0 +1,32 @@
+{
+  "search_title": "US placement agents with a biotech or healthcare fund track record",
+  "search_date": "2026-09-04",
+  "assumed_band_usd_m": [300, 600],
+  "assumed_band_source_note": "Doc footer says this band is DeepFlows' own assumption, not confirmed from the GP. Deck (Mar 2026) states Fund II target is $200-250M instead - see notes in global_bioaccess_fund.json GP profile.",
+  "ordering_rule": "ordered by fit (evidence score); US-headquartered firms first when scores are within a point",
+  "universe_screened": "1,182 US fund placement agents (Preqin) plus firm sites, press releases, SEC EDGAR Form D, FINRA BrokerCheck and trade press",
+  "mandates_traced": 114,
+  "prepared_by": "DeepFlows",
+  "ranked": [
+    {"rank": 1, "firm": "Atlantic-Pacific Capital", "region": "United States", "hq": "New York", "offices": ["Stamford", "LA", "SF", "London", "HK"], "latest_sector_mandate": "2025-07", "latest_domain_specific_mandate": "2023-10", "note": "repeat biotech-VC clients (MPM, Panacea, Legend Capital Healthcare), pharma financing (NovaQuest), healthcare PE (Revelstoke); 186 Form D citations"},
+    {"rank": 2, "firm": "Eaton Partners (Stifel)", "region": "United States", "hq": "Rowayton CT / NY", "latest_sector_mandate": "2026-06", "latest_domain_specific_mandate": "2022-06", "note": "best size/sector match in $275-760M band; sole agent on Assured Healthcare Partners III in market; Stifel biopharma capital markets"},
+    {"rank": 3, "firm": "Asante Capital Group", "region": "Europe", "hq": "London", "offices": ["New York", "HK"], "latest_sector_mandate": "2026-07", "latest_domain_specific_mandate": "2023-12", "note": "strongest biotech-VC file (Abingworth Bioventures 6-9, WCAS XII-XV); London HQ so placed after US-HQ peers of equal score per the stated tiebreak rule"},
+    {"rank": 4, "firm": "Probitas Partners", "region": "United States", "hq": "San Francisco", "latest_sector_mandate": "2025-10", "latest_domain_specific_mandate": "2019-06", "note": "fresh healthcare closes in band, but biotech-specific history dates from 2011-2019; own broker-dealer"},
+    {"rank": 5, "firm": "Houlihan Lokey Private Funds Group / Triago", "region": "United States / Europe", "hq": "Los Angeles / New York", "offices": ["Triago: Paris, NY"], "latest_sector_mandate": "2025-07", "latest_domain_specific_mandate": "2021-10", "note": "US healthcare PE plus biotech VC via Triago; Paris desk a plus for European GPs"},
+    {"rank": 6, "firm": "Snowbridge Advisors", "region": "United States", "hq": "New York", "latest_sector_mandate": "2024-06", "latest_domain_specific_mandate": "2024-06", "note": "under-the-radar biotech agent, ex-Deutsche Bank team, boutique"},
+    {"rank": 7, "firm": "Monument Group", "region": "United States", "hq": "Boston", "offices": ["London", "Amsterdam", "HK", "Tokyo"], "latest_sector_mandate": "2025-06", "latest_domain_specific_mandate": "2020-04", "note": "healthcare-buyout specialist in exact size band, but no biotech-VC/therapeutics fund in its Form D trail"},
+    {"rank": 8, "firm": "Capstone Partners (Mizuho)", "region": "United States", "hq": "Dallas / New York", "latest_sector_mandate": "2024-07", "latest_domain_specific_mandate": "2024-07", "note": "upper end of size band; Mizuho balance sheet behind it"},
+    {"rank": 9, "firm": "Pacenote Capital", "region": "United States", "hq": "Austin, TX", "latest_sector_mandate": "2026-09", "latest_domain_specific_mandate": "2026-09", "note": "freshest activity of the whole set, but its healthcare-services deals ($125-300M) sit BELOW the assumed band on size - ranks 9th despite best recency, showing size-band fit can dominate raw recency"},
+    {"rank": 10, "firm": "Harris Williams Private Capital Advisory (ex-Sixpoint)", "region": "United States", "hq": "New York", "latest_sector_mandate": "2024-10", "latest_domain_specific_mandate": null, "note": "solid LMM healthcare recency but NO biotech-specific mandate found at all - domain-specificity gap outweighs decent recency"},
+    {"rank": 11, "firm": "UBS Private Funds Group", "region": "United States / Europe", "hq": "New York / Zurich", "latest_sector_mandate": "2021-10", "latest_domain_specific_mandate": "2021-10", "note": "largest biotech-specific $ amounts of anyone on the list (MPM Oncology $471M+$850M) but most-dated recency (2021) and via UBS wealth channel, not institutional desk - ranks last despite biggest historical scale, showing recency decay dominates absolute deal size"}
+  ],
+  "also_considered": [
+    {"firm": "Lazard Private Capital Advisory (-> Lazard CL)", "note": "fresh and in band, healthcare services only, no biotech VC"},
+    {"firm": "William Blair", "note": "fresh, healthcare services; biopharma IB desk"},
+    {"firm": "Metric Point Capital", "note": "in band, healthcare services, no biotech"},
+    {"firm": "Harken Capital Securities", "note": "biotech VC in 2015 but newer funds not confirmed on Form D"},
+    {"firm": "Strathmore Group", "note": "small boutique, website parked"},
+    {"firm": "Evercore Private Funds Group (+ Evercore ISI)", "note": "dominant healthcare-PE agent but scale far above a $300-600M raise"},
+    {"firm": "PJT Park Hill", "note": "same - scale far above band"}
+  ]
+}
