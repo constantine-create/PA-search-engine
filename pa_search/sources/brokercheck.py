@@ -2,12 +2,15 @@
 registered placement agent (not a random advisor/finder) and surfaces the
 named broker/rep.
 
-CONFIDENCE NOTE: same caveat as edgar_formd.py - this sandbox's egress
-policy blocks api.brokercheck.finra.org (confirmed via curl, org policy
-403, not transient), so this has not been exercised against a live
-response. The endpoint and param names below reflect the public API the
-BrokerCheck website itself calls; treat as a documented starting point to
-verify on first live run, not as tested code.
+VALIDATED LIVE 2026-09-21 once this environment's network policy was set
+to Full access. The endpoint originally written here (`/search`) was
+wrong - AWS API Gateway returned "MissingAuthenticationTokenException",
+which despite the name just means no route matched, not that auth is
+required. The real path is `/search/firm`, and it needs a Referer header
+or Cloudflare blocks it. Confirmed against Atlantic-Pacific Capital: CRD
+38356, which matches the recipientCRDNumber pulled independently from a
+real Form D filing via edgar_formd.py - the two sources cross-reference
+correctly.
 
 For non-US firms this won't resolve anything - see companies_house.py /
 fca_register.py (not yet built) for the UK equivalents that the ISQ
@@ -19,34 +22,34 @@ from __future__ import annotations
 
 import requests
 
-BROKERCHECK_SEARCH = "https://api.brokercheck.finra.org/search"
-BROKERCHECK_FIRM_DETAIL = "https://api.brokercheck.finra.org/search/firm/{crd}"
+BROKERCHECK_FIRM_SEARCH = "https://api.brokercheck.finra.org/search/firm"
 
-HEADERS = {"User-Agent": "Constantine Advisors Research mbaer@constantineadvisors.com"}
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Constantine Advisors Research mbaer@constantineadvisors.com)",
+    "Referer": "https://brokercheck.finra.org/",
+}
 
 
 def search_firm(name: str) -> list[dict]:
-    """Look up a firm by name. Returns candidate matches with CRD numbers.
-
-    NOTE: BrokerCheck's public search UI also serves individual brokers by
-    default; pass a `type=Firm` style filter if the live response mixes
-    individuals and firms in a way that isn't useful here - the exact
-    filter param name needs confirming on first live call.
+    """Look up a firm by name. Returns candidate matches with CRD numbers
+    (field: firm_bd_sec_number) and active/registered status (firm_scope).
     """
-    params = {"query": name, "hl": "true", "nrows": 12, "start": 0, "r": 25, "wt": "json"}
-    resp = requests.get(BROKERCHECK_SEARCH, params=params, headers=HEADERS, timeout=30)
+    params = {
+        "query": name,
+        "filter": "active=true",
+        "includePrevious": "true",
+        "hl": "true",
+        "nrows": 12,
+        "start": 0,
+        "r": 25,
+        "sort": "score desc",
+        "wt": "json",
+    }
+    resp = requests.get(BROKERCHECK_FIRM_SEARCH, params=params, headers=HEADERS, timeout=30)
     resp.raise_for_status()
     data = resp.json()
     hits = data.get("hits", {}).get("hits", [])
     return [hit.get("_source", hit) for hit in hits]
-
-
-def get_firm_detail(crd_number: str) -> dict:
-    """Full firm record by CRD: registration status, disciplinary
-    disclosures, branch offices, named reps."""
-    resp = requests.get(BROKERCHECK_FIRM_DETAIL.format(crd=crd_number), headers=HEADERS, timeout=30)
-    resp.raise_for_status()
-    return resp.json()
 
 
 def is_registered_broker_dealer(name: str) -> tuple[bool | None, str | None, list[str]]:
@@ -72,5 +75,11 @@ def is_registered_broker_dealer(name: str) -> tuple[bool | None, str | None, lis
         warnings.append(f"{len(hits)} BrokerCheck matches for {name!r} - taking the first, confirm manually")
 
     top = hits[0]
-    crd = top.get("firm_crd_nb") or top.get("crd_number") or top.get("org_source_id")
-    return True, crd, warnings
+    # firm_source_id is BrokerCheck's CRD number and is what matches Form D's
+    # recipientCRDNumber (confirmed: Atlantic-Pacific Capital = 38356 in both).
+    # firm_bd_sec_number is a DIFFERENT identifier (the SEC file number, e.g.
+    # "48198" for the same firm) - do not confuse the two.
+    crd = top.get("firm_source_id")
+    scope = (top.get("firm_scope") or "").upper()
+    is_registered = "ACTIV" in scope if scope else None
+    return is_registered, crd, warnings

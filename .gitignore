@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 output/*.md
 !output/.gitkeep
+data/harvest_cache/
