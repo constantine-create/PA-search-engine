@@ -1,0 +1,37 @@
+{
+  "fund_name": "Waterloo Associates Fund III, LP",
+  "manager_name": "Waterloo Associates",
+  "fund_number": "Fund III",
+  "strategy_tags": [
+    "real estate",
+    "land development",
+    "residential land development",
+    "lot banking",
+    "structured land banking",
+    "homebuilder finance",
+    "single-family residential (SFR)",
+    "structured credit / preferred equity to homebuilders"
+  ],
+  "stage_tags": [
+    "land purchase through horizontal development",
+    "pre-committed takedown structure (builder pays deposit + scheduled lot purchases)",
+    "no vertical build/construction risk",
+    "18 month investment period + recycle",
+    "5 year term + two 1-year extensions"
+  ],
+  "target_fund_size_usd_m": [200, 200],
+  "prior_fund_size_usd_m": null,
+  "geography": [
+    "United States",
+    "Sun Belt region (Texas, Florida, Arizona, Georgia, North Carolina primary markets seen: Austin, Jacksonville, Phoenix, Houston, Dallas/Ft Worth, Tampa, Atlanta, Ft Myers, Raleigh/Durham, Charlotte, Orlando)"
+  ],
+  "target_lp_types": [
+    "institutional",
+    "family office",
+    "RIA",
+    "individual accredited investors",
+    "qualified clients"
+  ],
+  "source_document": "Waterloo_Associates_Fund_III_-_Investor_Deck_Institutional.pdf (25 pages) + Waterloo_Associates_Fund_III_-_Fact_Sheet_Institutional.pdf (2 pages), both full text read",
+  "notes": "Prior vehicle is 'Waterloo Associates SFR Fund II, LP' (Fund II) plus several SMAs/JVs - not a debut manager, but this appears to be only the third institutional-style fund and Fund II performance data (per-project IRRs 13-28%, mix of realized/unrealized) is shown transparently in the deck. This is NOT a typical blind-pool PE/VC fund - it's closer to a structured real estate credit/preferred-equity strategy (target 8% pref, 17%+ cash yield, 80/20 promote, 55% LTC leverage) where the Fund buys land, gets paid down on a pre-committed schedule by homebuilders, and has zero vertical construction risk. Placement-agent fit should weight real estate / real assets / structured credit specialists much more heavily than generalist VC/growth-equity placement agents (the roster used for Global Bioaccess Fund and ISQ InfraTech is a poor starting universe here - built a new, real-estate-focused roster instead). Minimum investment is $10M, which is high relative to the $200M target (implies a small number of large institutional/family-office checks, not a broad retail-style raise) - this should weight toward placement agents with deep institutional/family-office relationships over those specializing in smaller checks."
+}
