@@ -100,14 +100,18 @@ def _with_retry(fn, attempts=3, base_delay=1.5):
     raise last_exc
 
 
-def harvest_firm(display_name: str, search_term: str, max_filings: int = 30) -> list[dict]:
+def harvest_firm(display_name: str, search_term: str, max_filings: int = 100) -> list[dict]:
     cache_path = CACHE_DIR / f"{display_name.replace(' ', '_').replace('/', '-')}.json"
     if cache_path.exists():
         return json.loads(cache_path.read_text())
 
     print(f"harvesting: {display_name} (search: {search_term!r})")
     try:
-        hits = _with_retry(lambda: edgar_formd.search_form_d(f'"{search_term}"', "2019-01-01", "2026-09-21"))
+        hits = _with_retry(
+            lambda: edgar_formd.search_form_d_paginated(
+                f'"{search_term}"', "2019-01-01", "2026-09-21", max_results=max_filings
+            )
+        )
     except Exception as e:
         print(f"  search failed: {e}")
         return []

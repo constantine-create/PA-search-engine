@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import csv
 import io
+import time
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -165,18 +166,47 @@ def build_recipient_index(zip_path: str | Path) -> dict[str, list[dict]]:
 # ---------------------------------------------------------------------------
 
 
-def search_form_d(query: str, start_date: str, end_date: str, forms: str = "D,D/A") -> list[dict]:
+def search_form_d(query: str, start_date: str, end_date: str, forms: str = "D,D/A", from_: int = 0) -> tuple[list[dict], int]:
     """Targeted keyword search across Form D filings, e.g. an issuer name
-    or a GP name, within a date range. Returns raw hit dicts from EDGAR's
-    full text search (`_source` field per hit); NOT a bulk-build tool -
-    EDGAR rate-limits this endpoint (documented guidance: max 10 req/sec,
-    be far more conservative for unattended scripts).
+    or a GP name, within a date range. Returns (hits, total_available) -
+    NOT a bulk-build tool - EDGAR rate-limits this endpoint (documented
+    guidance: max 10 req/sec, be far more conservative for unattended
+    scripts) and caps each page at 10 results, sorted by relevance (not
+    date) by default.
+
+    IMPORTANT LIMITATION found live: a prolific placement agent can have
+    hundreds of hits (Eaton Partners: 279 within a 2019-2026 window), and
+    relevance sort means a specific known deal can sit far past the first
+    page - confirmed this directly: Eaton's real Assured Healthcare
+    Partners II mandate didn't appear in the first 100 hits. For a firm
+    with total_available above a few hundred, full-text search is a
+    sampling tool, not a census - see edgar_formd.py's bulk data functions
+    (build_recipient_index) for exhaustive coverage instead.
     """
-    params = {"q": query, "forms": forms, "startdt": start_date, "enddt": end_date}
+    params = {"q": query, "forms": forms, "startdt": start_date, "enddt": end_date, "from": from_}
     resp = requests.get(FULL_TEXT_SEARCH, params=params, headers=SEC_HEADERS, timeout=30)
     resp.raise_for_status()
     data = resp.json()
-    return [hit["_source"] | {"_id": hit["_id"]} for hit in data.get("hits", {}).get("hits", [])]
+    hits = [hit["_source"] | {"_id": hit["_id"]} for hit in data.get("hits", {}).get("hits", [])]
+    total = data.get("hits", {}).get("total", {}).get("value", len(hits))
+    return hits, total
+
+
+def search_form_d_paginated(query: str, start_date: str, end_date: str, forms: str = "D,D/A", max_results: int = 100) -> list[dict]:
+    """Paginate search_form_d up to max_results. Use for firms whose total
+    hit count is large enough that the first page alone is unreliable."""
+    out: list[dict] = []
+    offset = 0
+    while len(out) < max_results:
+        hits, total = search_form_d(query, start_date, end_date, forms, from_=offset)
+        if not hits:
+            break
+        out.extend(hits)
+        offset += len(hits)
+        if offset >= total:
+            break
+        time.sleep(0.15)
+    return out[:max_results]
 
 
 def filing_xml_url(cik: str, accession_number: str) -> str:
