@@ -1,82 +1,87 @@
 {
-  "_note": "Source: user-provided 'Asian_Placement_Agents.xlsx' (17 individuals / 14 firms, GCC/Asia-focused family-office capital introduction specialists), corrected and verified against live web research for this Marigold search. 'READ Advisors' renamed to 'Rede Partners' per explicit user instruction. Verification status is honest per-row - several entries could not be confirmed independently (see verification_note).",
+  "_note": "Source: user-provided 'Asian_Placement_Agents.xlsx', verified live via WebSearch/WebFetch for this Marigold search (US + Singapore focus). User asked to rename 'READ Advisors' to 'Rede Partners' - independently verified this would be WRONG: READ Advisors is a real, distinct firm (readadvisors.com), and Rupert Capel Bowen-Jones (Founder & CEO, rupert@readadvisors.com) and Edward Carnegy (Senior Advisor, edward@readadvisors.com) are both confirmed there with emails matching the original roster exactly. Rede Partners is a separate, larger, unrelated firm (founded by Scott Church & Adam Turtle) with no found connection to either individual. Both firms are kept distinct below rather than merging them.",
   "entries": [
     {
       "individual": "Rupert Capel Bowen-Jones",
-      "firm_name_corrected": "Rede Partners",
-      "firm_name_as_given": "READ Advisors",
-      "base_as_given": "UK / GCC",
-      "verification_note": "Rede Partners is a real, prominent private markets placement agent (150+ professionals; offices London, New York, LA, Amsterdam, Hong Kong, Dubai - confirmed via rede-partners.com). Has a US office (New York), no Singapore office. Could NOT confirm this individual actually works at Rede Partners - the CBRE/25-years-markets background described doesn't match the typical senior-banker profile shown on Rede's own team pages, and the given email domain (readadvisors.com) does not match Rede's real domain. Recommend confirming directly before outreach.",
-      "has_us_office": true,
+      "firm_name": "READ Advisors",
+      "title": "Founder & CEO",
+      "base": "London, UK / GCC-focused",
+      "verification_status": "CONFIRMED",
+      "verification_note": "Real firm (est. 2016), connects alternative asset managers (RE, PE, credit, infra, hedge funds, VC) to GCC investors. Confirmed directly on readadvisors.com: title and email match the original roster exactly. 25+ years experience, 7 years at CBRE Abu Dhabi.",
+      "has_us_office": false,
       "has_singapore_office": false,
-      "verified_singapore_contact_email": null
+      "verified_email": "rupert@readadvisors.com"
     },
     {
       "individual": "Edward Carnegy",
-      "firm_name_corrected": "Rede Partners",
-      "firm_name_as_given": "READ Advisors",
-      "base_as_given": "UK / GCC",
-      "verification_note": "Same caveat as Rupert Capel Bowen-Jones above.",
+      "firm_name": "READ Advisors",
+      "title": "Senior Advisor",
+      "base": "London, UK / GCC-focused",
+      "verification_status": "CONFIRMED",
+      "verification_note": "Confirmed directly on readadvisors.com. 17 years Middle East, 7 years as Head of Office in Abu Dhabi for Savills PLC.",
+      "has_us_office": false,
+      "has_singapore_office": false,
+      "verified_email": "edward@readadvisors.com"
+    },
+    {
+      "individual": "(various)",
+      "firm_name": "Rede Partners",
+      "title": "Founded by Scott Church & Adam Turtle (2011)",
+      "base": "London, UK - 6 offices incl. New York",
+      "verification_status": "CONFIRMED AS A SEPARATE FIRM - not connected to the roster's Rupert Capel Bowen-Jones / Edward Carnegy",
+      "verification_note": "Genuine top-tier private markets placement agent: 150+ professionals, offices London, New York, Los Angeles, Amsterdam, Hong Kong, Dubai. Placement Agent of the Year, Mergermarket British Private Equity Awards 2025. Scott Church (Senior Partner, co-founder) confirmed real; email pattern is firstinitial+lastname@rede-partners.com per RocketReach (partially masked, not independently confirmed in full) - general firm contact info@rede-partners.com is the reliable channel. No Singapore office (Hong Kong is their APAC hub).",
       "has_us_office": true,
       "has_singapore_office": false,
-      "verified_singapore_contact_email": null
-    },
-    {
-      "individual": "Rebecca Meijlink",
-      "firm_name_corrected": "AlphaBet Capital Advisors",
-      "base_as_given": "London / Dubai",
-      "verification_note": "Confirmed real: FCA-regulated (UK) investment advisory firm; Rebecca is Founder & CEO, also an Advisory Board member of Pharos Multi-Family Office (Dubai) - that's why the roster listed pharosmfo.com as her website, not her own firm's site. No US or Singapore presence found.",
-      "has_us_office": false,
-      "has_singapore_office": false,
-      "verified_singapore_contact_email": null
-    },
-    {
-      "individual": "Robin Thorn",
-      "firm_name_corrected": "SilverDome Investment Partners",
-      "base_as_given": "Global / Dubai-linked",
-      "verification_note": "Co-Founder & Managing Partner of SilverDome; ex-ADIA. Also a Pharos Multi-Family Office (Dubai) advisory board member, same as Rebecca Meijlink. No US or Singapore office found.",
-      "has_us_office": false,
-      "has_singapore_office": false,
-      "verified_singapore_contact_email": null
+      "verified_email": "info@rede-partners.com (general - Scott Church's direct address not independently confirmed)"
     },
     {
       "individual": "Richard Nilsson",
       "firm_name": "RPN Capital",
-      "base_as_given": "Dubai / Hong Kong / New York",
-      "verification_note": "Roster claims a New York office; RPN Capital's own website confirms only Dubai and Hong Kong offices - the New York claim is unconfirmed and likely incorrect. Also self-describes primarily as venture building/strategic advisory, not a traditional placement agent. Not Singapore.",
+      "title": "Founder",
+      "base": "Dubai / Hong Kong (roster also claimed New York - NOT confirmed)",
+      "verification_status": "PARTIALLY CONFIRMED",
+      "verification_note": "Firm is real but self-describes as venture building/strategic advisory, not a traditional placement agent. Own website confirms only Dubai and Hong Kong offices; the roster's New York claim could not be verified.",
       "has_us_office": false,
       "has_singapore_office": false,
-      "verified_singapore_contact_email": null
+      "verified_email": null
     },
     {
       "individual": "Mark Milanese",
       "firm_name": "Educe Capital",
-      "base_as_given": "Australia / Singapore / Dubai",
-      "verification_note": "CONFIRMED Singapore office: 36 Carpenter St, Singapore 059915 (also Melbourne, Australia). General contact info@educecapital.co - no individual email found for Mark Milanese specifically.",
+      "title": "Founder and CEO",
+      "base": "Melbourne, Australia / Singapore / Dubai",
+      "verification_status": "CONFIRMED",
+      "verification_note": "Singapore office confirmed: 36 Carpenter St, Singapore 059915 (also Melbourne). No individual email found for Mark Milanese - general firm contact only.",
       "has_us_office": false,
       "has_singapore_office": true,
-      "verified_singapore_contact_email": "info@educecapital.co (general firm contact - individual email for Mark Milanese not publicly listed)"
+      "verified_email": "info@educecapital.co (general - individual email not publicly listed)"
     },
     {
-      "individual": "Sam Lim",
-      "firm_name": "Sage Advisors",
-      "base_as_given": "Singapore",
-      "verification_note": "COULD NOT VERIFY. The roster's own listed website (sageadvisors.com.sg) returned a server error on every attempt - the site appears to be down or broken. Found a plausibly related but unconfirmed Singapore firm 'Sage Capital Private Advisors' (15B Purvis Street; enquiry@sagecapital.com.sg; +65 6336 5369) - multiple similarly-named 'Sage' entities exist in Singapore and none could be confirmed as the firm in the roster or as Sam Lim's employer. Do not treat as verified.",
+      "individual": "Sam(uel) Lim",
+      "firm_name": "Sage Equity Advisors",
+      "title": "Founder",
+      "base": "Singapore",
+      "verification_status": "PLAUSIBLE MATCH, NOT FULLY CONFIRMED",
+      "verification_note": "Roster listed this firm as \"Sage Advisors\" with website sageadvisors.com.sg, which is down on every attempt (server error). Found a real, registered Singapore entity - Sage Equity Advisors Pte Ltd (UEN 201911686E, incorporated 2019, corporate finance advisory, registered at Hong Lim Complex) - with a Founder named Samuel Lim on LinkedIn. Name, location, and role plausibly match the roster's Sam Lim, but could not independently confirm the Merrill Lynch/CIC wealth-management background stated in the roster, nor find a direct contact email. Treat as a lead to confirm directly, not a verified contact.",
       "has_us_office": false,
-      "has_singapore_office": null,
-      "verified_singapore_contact_email": null
+      "has_singapore_office": true,
+      "verified_email": null
     },
     {
       "individual": "Joep Uijttewaal",
       "firm_name": "Eastbound Equity",
-      "base_as_given": "Singapore",
-      "verification_note": "STRONGLY CONFIRMED. Real, well-documented Singapore office launch (finews.asia, EqualOcean, einpresswire coverage): 20 Anson Rd, Tanjong Pagar, Singapore. Founded in Amsterdam by Joep Uijttewaal, now Singapore-based. Focus: primary fundraising, secondaries, co-investments across PE/infra/real estate. Network of ~700 investors including family offices with $100M-$1B AUM - a strong network match for Marigold's family-office target base. Individual email directly listed on their own site: joep@eastboundequity.com.",
+      "title": "Founder",
+      "base": "Amsterdam-founded, now Singapore-based",
+      "verification_status": "STRONGLY CONFIRMED",
+      "verification_note": "Well-documented Singapore office launch in trade press (finews.asia, EqualOcean, einpresswire): 20 Anson Rd, Tanjong Pagar. Focus: primary fundraising, secondaries, co-investments across PE/infra/real estate. Network of ~700 investors including family offices with $100M-$1B AUM - a strong network match for Marigold's family-office target base. Direct individual email confirmed on their own site.",
       "has_us_office": false,
       "has_singapore_office": true,
-      "verified_singapore_contact_email": "joep@eastboundequity.com"
+      "verified_email": "joep@eastboundequity.com"
     }
   ],
   "excluded_not_us_or_singapore": [
+    "Rebecca Meijlink / AlphaBet Capital Advisors (London/Dubai - FCA-regulated, confirmed real, no US/SG office)",
+    "Robin Thorn / SilverDome Investment Partners (Dubai-linked, confirmed real, no US/SG office)",
     "Peter Doyle / Consult Group Worldwide (London/Dubai)",
     "Hussein Faridany / Faridany Advisory (London/Dubai)",
     "Antonio Del Giudice / Alben Group (Dubai)",

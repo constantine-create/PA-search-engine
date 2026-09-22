@@ -63,7 +63,7 @@ def _styles():
     return ss
 
 
-def _header_footer(canvas, doc, gp_name: str):
+def _header_footer(canvas, doc, header_right_text: str):
     canvas.saveState()
     canvas.setStrokeColor(LIGHT_RULE)
     canvas.setLineWidth(0.6)
@@ -73,8 +73,7 @@ def _header_footer(canvas, doc, gp_name: str):
     canvas.drawString(PAGE_MARGIN, LETTER[1] - 0.45 * inch, "CONSTANTINE ADVISORS")
     canvas.setFont("Helvetica", 8.5)
     canvas.setFillColor(SLATE)
-    canvas.drawRightString(LETTER[0] - PAGE_MARGIN, LETTER[1] - 0.45 * inch,
-                            f"Placement Agent Shortlist — {gp_name}")
+    canvas.drawRightString(LETTER[0] - PAGE_MARGIN, LETTER[1] - 0.45 * inch, header_right_text)
 
     canvas.line(PAGE_MARGIN, 0.6 * inch, LETTER[0] - PAGE_MARGIN, 0.6 * inch)
     canvas.setFont("Helvetica", 7.5)
@@ -268,6 +267,131 @@ def render_pdf(
     doc.addPageTemplates([
         PageTemplate(id="cover", frames=[cover_frame], onPage=lambda c, d: None),
         PageTemplate(id="body", frames=[body_frame],
-                      onPage=lambda c, d: _header_footer(c, d, gp.fund_name)),
+                      onPage=lambda c, d: _header_footer(c, d, f"Placement Agent Shortlist — {gp.fund_name}")),
+    ])
+    doc.build(story)
+
+
+_STATUS_STYLE = {
+    "STRONGLY CONFIRMED": ("CONFIRMED", NAVY),
+    "CONFIRMED": ("CONFIRMED", NAVY),
+    "CONFIRMED AS A SEPARATE FIRM - not connected to the roster's Rupert Capel Bowen-Jones / Edward Carnegy":
+        ("CONFIRMED - SEPARATE FIRM", NAVY),
+    "PARTIALLY CONFIRMED": ("PARTIALLY CONFIRMED", GOLD),
+    "PLAUSIBLE MATCH, NOT FULLY CONFIRMED": ("UNCONFIRMED LEAD", SLATE),
+}
+
+
+def _status_badge(status: str) -> tuple[str, colors.Color]:
+    for key, val in _STATUS_STYLE.items():
+        if status.startswith(key):
+            return val
+    return (status.upper(), SLATE)
+
+
+def render_research_pdf(
+    title: str,
+    subtitle: str,
+    out_path: str,
+    intro_note: str,
+    entries: list[dict],
+    excluded: list[str] | None = None,
+    prepared_by: str = "Constantine Advisors",
+    as_of: date | None = None,
+) -> None:
+    """For research that doesn't fit the scored-mandate model (e.g. a
+    provided contact roster verified via web research rather than SEC
+    filings) - same branded look as render_pdf, a verification-status
+    badge per entry instead of a fit score."""
+    as_of = as_of or date.today()
+    ss = _styles()
+    story = []
+
+    story.append(Spacer(1, 1.6 * inch))
+    story.append(Paragraph("CONSTANTINE ADVISORS", ParagraphStyle(
+        "CoverBrand", fontSize=11, textColor=GOLD, leading=13, spaceAfter=36)))
+    story.append(Paragraph(title, ss["CoverTitle"]))
+    story.append(Paragraph(subtitle, ss["CoverSub"]))
+    story.append(Spacer(1, 200))
+    story.append(Paragraph(as_of.strftime("%B %d, %Y"), ParagraphStyle(
+        "CoverDate", fontSize=10, textColor=SLATE)))
+    story.append(Paragraph(f"Prepared by {prepared_by}", ParagraphStyle(
+        "CoverPrep", fontSize=10, textColor=SLATE, spaceAfter=4)))
+    story.append(Paragraph("Confidential", ParagraphStyle(
+        "CoverConf", fontSize=9, textColor=GOLD)))
+    story.append(NextPageTemplate("body"))
+    story.append(PageBreak())
+
+    story.append(Paragraph("Overview", ParagraphStyle("H1", parent=ss["Heading1"], fontSize=15,
+                                                        textColor=NAVY, spaceAfter=8)))
+    story.append(Paragraph(intro_note, ss["Intro"]))
+    story.append(Spacer(1, 8))
+    story.append(HRFlowable(width="100%", thickness=0.75, color=LIGHT_RULE, spaceAfter=14))
+
+    for i, e in enumerate(entries, start=1):
+        card = []
+        badge_text, badge_color = _status_badge(e["verification_status"])
+
+        head_table = Table(
+            [[
+                Paragraph(f"{i}. {e['individual']} — {e['firm_name']}", ss["FirmName"]),
+                Table([[Paragraph(badge_text, ss["TinyLabel"])]],
+                      colWidths=[1.7 * inch], rowHeights=[0.24 * inch],
+                      style=TableStyle([
+                          ("BACKGROUND", (0, 0), (-1, -1), badge_color),
+                          ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                          ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                      ])),
+            ]],
+            colWidths=[4.3 * inch, 1.75 * inch],
+        )
+        head_table.setStyle(TableStyle([
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("ALIGN", (1, 0), (1, 0), "RIGHT"),
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+        ]))
+        card.append(head_table)
+
+        offices = []
+        if e.get("has_us_office"):
+            offices.append("US office")
+        if e.get("has_singapore_office"):
+            offices.append("Singapore office")
+        meta_bits = [e.get("title", ""), e.get("base", "")]
+        if offices:
+            meta_bits.append(" & ".join(offices))
+        card.append(Paragraph(" • ".join(b for b in meta_bits if b), ss["Meta"]))
+
+        if e.get("verified_email"):
+            card.append(Paragraph(f"<b>Email:</b> {e['verified_email']}", ss["Body"]))
+
+        card.append(Paragraph(e["verification_note"], ss["Body"]))
+        card.append(Spacer(1, 14))
+        story.append(KeepTogether(card))
+
+    if excluded:
+        story.append(Spacer(1, 6))
+        story.append(HRFlowable(width="100%", thickness=0.75, color=LIGHT_RULE, spaceAfter=10))
+        story.append(Paragraph("Also in the source roster, outside US/Singapore scope",
+                                ParagraphStyle("H2", parent=ss["Heading2"], fontSize=12,
+                                               textColor=NAVY, spaceAfter=6)))
+        for name in excluded:
+            story.append(Paragraph(f"• {name}", ss["Meta"]))
+
+    doc = BaseDocTemplate(
+        out_path, pagesize=LETTER,
+        leftMargin=PAGE_MARGIN, rightMargin=PAGE_MARGIN,
+        topMargin=0.9 * inch, bottomMargin=0.8 * inch,
+        title=title, author=prepared_by,
+    )
+    cover_frame = Frame(PAGE_MARGIN, 0.8 * inch, LETTER[0] - 2 * PAGE_MARGIN,
+                         LETTER[1] - 1.7 * inch, id="cover")
+    body_frame = Frame(PAGE_MARGIN, 0.8 * inch, LETTER[0] - 2 * PAGE_MARGIN,
+                        LETTER[1] - 1.7 * inch, id="body")
+    doc.addPageTemplates([
+        PageTemplate(id="cover", frames=[cover_frame], onPage=lambda c, d: None),
+        PageTemplate(id="body", frames=[body_frame],
+                      onPage=lambda c, d: _header_footer(c, d, f"{title} — {subtitle}")),
     ])
     doc.build(story)
