@@ -1,0 +1,33 @@
+{
+  "fund_name": "Project Marigold (Armstrong International)",
+  "manager_name": "Marigold - House of Singularities (Swiss holding company)",
+  "fund_number": "Fund I",
+  "strategy_tags": [
+    "luxury goods",
+    "luxury brand holding company",
+    "leather goods",
+    "jewelry",
+    "fragrances",
+    "brand revival / dormant luxury asset turnaround",
+    "permanent capital vehicle (not a traditional closed-end fund)"
+  ],
+  "stage_tags": [
+    "acquisition of controlling stakes in dormant/underperforming heritage luxury brands",
+    "5-7 year value creation horizon, held long-term (not flipped)",
+    "prospective first targets named in deck: Lalique, Repetto, Miller Harris"
+  ],
+  "target_fund_size_usd_m": [200, 200],
+  "prior_fund_size_usd_m": null,
+  "geography": [
+    "Switzerland (holding company domicile)",
+    "Primarily French and selected European luxury brands",
+    "Global expansion targeted: US, Middle East, China, India"
+  ],
+  "target_lp_types": [
+    "family offices",
+    "private investors / UHNW",
+    "explicitly NOT described as targeting traditional institutional LPs (pensions, endowments) in the deck"
+  ],
+  "source_document": "Marigold_Deck_2026.pdf (24 pages, full deck read)",
+  "notes": "CHF 200M initial capital raise (figures marked 'subject to confirmation' in the deck), targeting 25%+ CAGR, CHF 400M+ 5-7yr value creation goal, 80% investor ownership with board representation. This is a Swiss holding company raising permanent capital, NOT a US Reg D fund - SEC Form D almost certainly does not apply, so the GBF/Waterloo Form D harvesting approach is not usable here even when SEC EDGAR access works. Partners are senior luxury-industry OPERATORS (ex-Estee Lauder, Gucci, Bulgari, Chopard, Dior, Jimmy Choo executives), not capital-raising professionals - the GP will need placement/introduction help, consistent with why this search was commissioned. User's explicit brief for this search: focus specifically on agents with US and Singapore relevance, verify which have a Singapore office, and get the email of the main Singapore contact at each."
+}
