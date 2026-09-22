@@ -85,7 +85,7 @@ class PAFirm:
     """A placement agent firm — the unit of candidacy in the search."""
 
     name: str
-    hq: str
+    hq: str | None
     other_offices: list[str] = field(default_factory=list)
     website: str | None = None
     crd_number: str | None = None  # FINRA (US)

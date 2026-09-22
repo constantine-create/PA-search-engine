@@ -85,7 +85,9 @@ def load_firm(display_name: str, search_term: str, bd_registration: dict,
     reg = bd_registration.get(display_name, {})
     return PAFirm(
         name=display_name,
-        hq="(not yet enriched - needs firm website/BrokerCheck address lookup)",
+        hq=None,  # populated by BrokerCheck lookup where available (build_waterloo_shortlist.enrich_location);
+                  # left None (not a placeholder string) when unmatched, so downstream renderers can
+                  # handle "unknown" cleanly instead of leaking internal text into client-facing output
         crd_number=reg.get("crd"),
         is_registered_broker_dealer=reg.get("is_registered_bd"),
         region="United States",

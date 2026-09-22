@@ -2,5 +2,6 @@ __pycache__/
 *.pyc
 .venv/
 output/*.md
+output/*.pdf
 !output/.gitkeep
 data/harvest_cache/

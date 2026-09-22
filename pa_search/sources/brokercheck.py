@@ -52,6 +52,31 @@ def search_firm(name: str) -> list[dict]:
     return [hit.get("_source", hit) for hit in hits]
 
 
+def get_firm_location(name: str) -> str | None:
+    """City, state from BrokerCheck's firm_address_details (was being
+    fetched and silently discarded - is_registered_broker_dealer only
+    ever pulled CRD/scope from this same response)."""
+    import json as _json
+
+    try:
+        hits = search_firm(name)
+    except requests.RequestException:
+        return None
+    if not hits:
+        return None
+    raw = hits[0].get("firm_address_details")
+    if not raw:
+        return None
+    try:
+        addr = _json.loads(raw).get("officeAddress", {})
+    except (ValueError, TypeError):
+        return None
+    city, state = addr.get("city"), addr.get("state")
+    if city and state:
+        return f"{city.title()}, {state}"
+    return city.title() if city else None
+
+
 def is_registered_broker_dealer(name: str) -> tuple[bool | None, str | None, list[str]]:
     """Best-effort registration check.
 

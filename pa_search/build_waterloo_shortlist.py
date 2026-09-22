@@ -15,9 +15,12 @@ from pa_search.gp_intake import load_profile
 from pa_search.harvest_waterloo import WATERLOO_ROSTER
 from pa_search.models import ScoredCandidate
 from pa_search.scoring import score_candidate
+from pa_search.sources import brokercheck
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
+
+AS_OF = date(2026, 9, 21)
 
 
 def load_sector_classification() -> tuple[set[str], set[str]]:
@@ -26,11 +29,13 @@ def load_sector_classification() -> tuple[set[str], set[str]]:
     return set(data["land_development_specific"]), set(data["real_estate_broad"])
 
 
-def main() -> None:
+def build_candidates(enrich_location: bool = True) -> tuple:
+    """Returns (gp, candidates) sorted best-first. Shared by the Markdown
+    debug view (main()) and the client-facing PDF composer, so both read
+    from the same scored data rather than recomputing it differently."""
     gp = load_profile(DATA_DIR / "gp_profiles" / "waterloo_associates_fund_iii.json")
     reg = json.loads((DATA_DIR / "harvest_cache" / "_waterloo_registrations.json").read_text())
 
-    as_of = date(2026, 9, 21)
     land_dev_names, re_names = load_sector_classification()
     candidates = []
     for display_name, search_term in WATERLOO_ROSTER:
@@ -38,7 +43,11 @@ def main() -> None:
             display_name, search_term, reg, land_dev_names, re_names,
             specific_tags=["land development", "real estate"], broad_tags=["real estate"],
         )
-        score = score_candidate(firm, gp, as_of, require_boutique=False)
+        if enrich_location:
+            loc = brokercheck.get_firm_location(search_term)
+            if loc:
+                firm.hq = loc
+        score = score_candidate(firm, gp, AS_OF, require_boutique=False)
         n_mandates = len(firm.mandates)
         n_re = len([m for m in firm.mandates if m.sector_tags])
         n_land = len([m for m in firm.mandates if "land development" in m.sector_tags])
@@ -51,12 +60,17 @@ def main() -> None:
         candidates.append(ScoredCandidate(firm=firm, score=score, thesis=thesis))
 
     candidates.sort(key=lambda c: c.score.total, reverse=True)
+    return gp, candidates
+
+
+def main() -> None:
+    gp, candidates = build_candidates(enrich_location=False)
 
     doc = render_shortlist(
         gp=gp,
         candidates=candidates,
         also_considered=[],
-        as_of=as_of,
+        as_of=AS_OF,
         universe_note=f"{len(WATERLOO_ROSTER)}-firm roster (real-estate/real-assets specialists "
                        f"identified via live web search, plus generalist firms validated against "
                        f"SEC Form D data in the GBF prototype run) cross-checked live against SEC "

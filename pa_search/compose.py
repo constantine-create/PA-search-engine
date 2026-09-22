@@ -36,7 +36,7 @@ def render_candidate_card(rank: int, candidate: ScoredCandidate, as_of: date) ->
     offices = ", ".join(f.other_offices) if f.other_offices else ""
     contacts = "; ".join(f.named_contacts) if f.named_contacts else ""
     header = f"### {rank}. {f.name}\n"
-    location = f.hq + (f" ({offices})" if offices else "")
+    location = (f.hq or "Location not confirmed") + (f" ({offices})" if offices else "")
     meta_bits = [location]
     if contacts:
         meta_bits.append(contacts)
