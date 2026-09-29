@@ -95,6 +95,42 @@ def build(out_path: str) -> None:
         ]))
         story.append(KeepTogether(row))
 
+    story.append(h1("Beyond SEC Filings: Other Sources We Draw On"))
+    story.append(Paragraph(
+        "Government filings only exist for US-registered funds. For everything else - a firm's "
+        "office locations, named contacts, recent activity, or any fund raised outside the US - "
+        "the process pulls from open, public sources on the internet:",
+        ss["Intro"]))
+    for label, body in [
+        ("Firm websites",
+         "Fetched directly for team bios, office addresses, and listed contact emails - the "
+         "first place to confirm a firm and person are real."),
+        ("Trade press and news",
+         "Industry publications and press-release wires (e.g. Private Equity International, "
+         "PR Newswire, GlobeNewswire) that report fund closes, new mandates, and office openings - "
+         "used to confirm a claim independently of the firm's own marketing."),
+        ("Professional networks and business intelligence platforms",
+         "LinkedIn to confirm someone's actual title and employer; deal-data platforms like "
+         "PitchBook, Crunchbase, and RocketReach where accessible, to cross-check a firm's "
+         "history and contact details."),
+        ("Public business registries",
+         "For firms outside the US, official government company registries (e.g. Singapore's "
+         "corporate registry) to confirm a firm is a real, currently-registered legal entity."),
+        ("General web search",
+         "Used to locate the right page or document in the first place, then followed up with a "
+         "direct fetch of that specific source rather than trusting the search summary alone."),
+    ]:
+        story.append(Paragraph(f"<b>{label}</b> — {body}", ss["Body"]))
+    story.append(Paragraph(
+        "None of these carry the legal weight of a government filing, so the process leans on "
+        "corroboration: a claim is only treated as confirmed once it is checked against the "
+        "firm's own site and at least one independent source. Anything that can't be corroborated "
+        "this way is reported as an unconfirmed lead, not presented as fact - as happened in a "
+        "recent search where one contact's stated firm and email were independently confirmed "
+        "correct, while a second contact could not be verified and was flagged as such rather "
+        "than guessed at.",
+        ss["Body"]))
+
     story.append(h1("Why This Is More Rigorous Than a Standard Search"))
     story.append(Paragraph(
         "Every claim about a firm's track record is checked against a primary source wherever "
