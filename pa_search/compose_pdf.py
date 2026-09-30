@@ -220,6 +220,10 @@ def render_pdf(
             meta_bits.append(c.firm.website)
         if c.firm.is_registered_broker_dealer:
             meta_bits.append("FINRA-registered broker-dealer")
+        if c.firm.is_boutique is True:
+            meta_bits.append("Independent / boutique")
+        elif c.firm.is_boutique is False:
+            meta_bits.append("Bank- or platform-owned desk")
         card.append(Paragraph(" • ".join(meta_bits), ss["Meta"]))
 
         card.append(Paragraph(_narrative(c), ss["Body"]))
