@@ -11,6 +11,7 @@ no file paths.
 from __future__ import annotations
 
 from datetime import date
+from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import LETTER
@@ -120,8 +121,13 @@ def _narrative(c: ScoredCandidate) -> str:
     mandates = c.firm.mandates
     tagged = [m for m in mandates if m.sector_tags]
     specific = [m for m in mandates if len(m.sector_tags) > 1]
-    dated = [m for m in mandates if m.close_or_filing_date]
+    # "Related" recency must come from mandates that are actually relevant to the
+    # strategy; taking the latest date across all mandates made a firm with one old
+    # real estate fund and a recent unrelated PE fund read as recently active here.
+    # A firm with no relevant mandates gets plain "mandate" wording instead.
+    dated = [m for m in (tagged or mandates) if m.close_or_filing_date]
     latest = max((m.close_or_filing_date for m in dated), default=None)
+    kind = "related mandate" if tagged else "mandate"
 
     bits = []
     if mandates:
@@ -136,11 +142,11 @@ def _narrative(c: ScoredCandidate) -> str:
     if latest:
         months = (date.today().year - latest.year) * 12 + (date.today().month - latest.month)
         if months <= 12:
-            sentence2 = f" Most recent related mandate closed within the past year ({latest.strftime('%B %Y')})."
+            sentence2 = f" Most recent {kind} closed within the past year ({latest.strftime('%B %Y')})."
         elif months <= 30:
-            sentence2 = f" Most recent related mandate closed {latest.strftime('%B %Y')}."
+            sentence2 = f" Most recent {kind} closed {latest.strftime('%B %Y')}."
         else:
-            sentence2 = f" Most recent related mandate on record dates to {latest.strftime('%B %Y')}."
+            sentence2 = f" Most recent {kind} on record dates to {latest.strftime('%B %Y')}."
 
     return sentence1 + sentence2
 
@@ -152,7 +158,10 @@ def render_pdf(
     intro_note: str,
     prepared_by: str = "Constantine Advisors",
     as_of: date | None = None,
+    firm_notes: dict[str, str] | None = None,
 ) -> None:
+    """firm_notes maps firm name -> a short note printed under that firm's
+    summary line. Optional: earlier reports pass nothing and render as before."""
     as_of = as_of or date.today()
     ss = _styles()
     story = []
@@ -227,6 +236,8 @@ def render_pdf(
         card.append(Paragraph(" • ".join(meta_bits), ss["Meta"]))
 
         card.append(Paragraph(_narrative(c), ss["Body"]))
+        if firm_notes and firm_notes.get(c.firm.name):
+            card.append(Paragraph(f"<b>Notes:</b> {escape(firm_notes[c.firm.name])}", ss["Body"]))
 
         mandates = _select_mandates(c)
         if mandates:
